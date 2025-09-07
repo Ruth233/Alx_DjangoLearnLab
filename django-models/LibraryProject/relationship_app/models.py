@@ -1,35 +1,21 @@
 from django.db import models
 
 # Create your models here.
-from django.db import models
+from relationship_app.models import Author, Book, Library, Librarian
+
+# Query 1: All books by a specific author
+def get_books_by_author(author_name):
+    author = Author.objects.get(name=author_name)  # required
+    return Book.objects.filter(author=author)      # required
 
 
-class Author(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
-class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
-
-    def __str__(self):
-        return self.title
+# Query 2: All books in a specific library
+def get_books_in_library(library_name):
+    library = Library.objects.get(name=library_name)
+    return library.books.all()
 
 
-class Library(models.Model):
-    name = models.CharField(max_length=200)
-    books = models.ManyToManyField(Book, related_name="libraries")
-
-    def __str__(self):
-        return self.name
-
-
-class Librarian(models.Model):
-    name = models.CharField(max_length=200)
-    library = models.OneToOneField(Library, on_delete=models.CASCADE, related_name="librarian")
-
-    def __str__(self):
-        return self.name
+# Query 3: The librarian for a library
+def get_librarian_for_library(library_name):
+    library = Library.objects.get(name=library_name)
+    return library.librarian
