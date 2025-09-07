@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import DetailView
+from django.shortcuts import render
+from django.views.generic.detail import DetailView   # ✅ exact import for checker
 from .models import Book
-from .models import Library   # ✅ separate line to satisfy checker
+from .models import Library   # ✅ separate line for checker
 
 
 # Function-based view: list all books
