@@ -120,5 +120,23 @@ def list_books(request):
         "relationship_app/list_books.html",  # ✅ Correct template path
         {"books": books}
     )
+from django.shortcuts import render
+from django.views.generic.detail import DetailView
+from .models import Book, Library   # ✅ Import Library (and Book if needed)
+
+# Function-based view for listing books (already added)
+def list_books(request):
+    books = Book.objects.all()
+    return render(
+        request,
+        "relationship_app/list_books.html",
+        {"books": books}
+    )
+
+# ✅ Class-based view for a specific library
+class LibraryDetailView(DetailView):
+    model = Library
+    template_name = "relationship_app/library_detail.html"  # ✅ Template path
+    context_object_name = "library"  # ✅ Context name
 
 
