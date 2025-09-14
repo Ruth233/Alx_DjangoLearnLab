@@ -138,3 +138,8 @@ LOGOUT_REDIRECT_URL = "login"
 AUTH_USER_MODEL = "relationship_app.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'       # if BASE_DIR is pathlib.Path
+# or: os.path.join(BASE_DIR, 'media') if using os.path
+
+
