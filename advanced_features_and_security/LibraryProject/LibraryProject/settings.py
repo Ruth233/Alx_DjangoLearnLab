@@ -10,6 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+"""
+Security measures implemented:
+- DEBUG = False in production
+- SECURE_BROWSER_XSS_FILTER, SECURE_CONTENT_TYPE_NOSNIFF, X_FRAME_OPTIONS
+- CSRF_COOKIE_SECURE and SESSION_COOKIE_SECURE for HTTPS-only cookies
+- CSP via django-csp middleware
+"""
+
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,4 +137,17 @@ LOGOUT_REDIRECT_URL = "login"
 
 AUTH_USER_MODEL = "relationship_app.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
+
+
+INSTALLED_APPS += ['csp']
+
+MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
+    # …existing middleware…
+]
+
+# Example CSP allowing self-hosted scripts and styles
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://cdn.jsdelivr.net')  # add CDNs you trust
+CSP_STYLE_SRC = ("'self'", 'https://fonts.googleapis.com')
 
