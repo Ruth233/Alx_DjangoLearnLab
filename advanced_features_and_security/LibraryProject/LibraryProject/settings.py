@@ -129,3 +129,24 @@ LOGOUT_REDIRECT_URL = "login"
 AUTH_USER_MODEL = "relationship_app.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
 
+
+# SECURITY CONFIGURATION
+DEBUG = False   # ✅ Disable debug in production
+
+ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']  # or ['*'] for testing only
+
+# Browser security headers
+SECURE_BROWSER_XSS_FILTER = True            # Helps prevent XSS
+SECURE_CONTENT_TYPE_NOSNIFF = True          # Prevents MIME-type sniffing
+X_FRAME_OPTIONS = 'DENY'                    # Prevent clickjacking
+
+# Secure cookies (requires HTTPS)
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Optional: HSTS (enforce HTTPS)
+SECURE_HSTS_SECONDS = 31536000              # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
