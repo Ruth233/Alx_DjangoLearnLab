@@ -46,4 +46,17 @@ def add_book(request):
     else:
         form = BookForm()
     return render(request, "bookshelf/book_form.html", {"form": form})
+    from django.contrib.auth import login
+from .forms import CustomUserCreationForm
+def register_view(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("list_books")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, "bookshelf/register.html", {"form": form})
+
 
