@@ -53,13 +53,13 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
 
 
-class CustomUser(AbstractUser):               # ✅ required class name
-    date_of_birth = models.DateField(null=True, blank=True)      # ✅ new field
-    profile_photo = models.ImageField(upload_to="profile_photos/",  # ✅ new field
-                                      null=True, blank=True)
+class CustomUser(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='profiles/', null=True, blank=True)
 
-    objects = BaseUserManager()
+    objects = CustomUserManager()   # <-- attach the manager
 
     def __str__(self):
         return self.username
+
 
