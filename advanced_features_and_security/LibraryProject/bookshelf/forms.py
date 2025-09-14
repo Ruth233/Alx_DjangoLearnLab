@@ -58,3 +58,12 @@ class CustomUserCreationForm(UserCreationForm):
                 user.profile_photo = photo
                 user.save()
         return user
+
+class ExampleForm(forms.Form):
+    """
+    A minimal example form (for testing/validation checks).
+    It does not affect application logic—used only as a sample.
+    """
+    name = forms.CharField(max_length=100, required=True, label="Name")
+    email = forms.EmailField(required=True, label="Email")
+
