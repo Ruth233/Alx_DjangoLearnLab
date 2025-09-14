@@ -163,4 +163,8 @@ X_FRAME_OPTIONS = "DENY"                 # Prevent clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True       # Prevent MIME-type sniffing
 SECURE_BROWSER_XSS_FILTER = True         # Enable browser XSS filter
 
+# Tell Django how to determine if the request was made via HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 
