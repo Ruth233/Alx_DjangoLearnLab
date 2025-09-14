@@ -138,16 +138,3 @@ LOGOUT_REDIRECT_URL = "login"
 AUTH_USER_MODEL = "relationship_app.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
 
-
-INSTALLED_APPS += ['csp']
-
-MIDDLEWARE = [
-    'csp.middleware.CSPMiddleware',
-    # …existing middleware…
-]
-
-# Example CSP allowing self-hosted scripts and styles
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'", 'https://cdn.jsdelivr.net')  # add CDNs you trust
-CSP_STYLE_SRC = ("'self'", 'https://fonts.googleapis.com')
-
