@@ -33,3 +33,14 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")  # redirect back to login page
+
+from django.shortcuts import render
+from .models import Book
+
+def list_books(request):
+    books = Book.objects.all()
+    return render(
+        request,
+        "relationship_app/list_books.html",
+        {"books": books}
+    )
