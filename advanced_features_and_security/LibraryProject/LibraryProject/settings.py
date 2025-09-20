@@ -138,3 +138,33 @@ LOGOUT_REDIRECT_URL = "login"
 AUTH_USER_MODEL = "relationship_app.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'       # if BASE_DIR is pathlib.Path
+# or: os.path.join(BASE_DIR, 'media') if using os.path
+
+# =======================
+# 🔐 HTTPS / Security Settings
+# =======================
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security: force HTTPS in browsers for 1 year
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Secure cookies: transmitted only over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Additional security headers
+X_FRAME_OPTIONS = "DENY"                 # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True       # Prevent MIME-type sniffing
+SECURE_BROWSER_XSS_FILTER = True         # Enable browser XSS filter
+
+# Tell Django how to determine if the request was made via HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+

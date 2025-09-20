@@ -1,16 +1,16 @@
 from django.shortcuts import render
 
 # Create your views here.
-<<<<<<< HEAD
 from django.shortcuts import render
 from .models import Book
+from .forms import ExampleForm   # demo form import for automated checks
+
 
 def search_books(request):
     query = request.GET.get('q', '')
     # Safe ORM filtering prevents SQL injection
     books = Book.objects.filter(title__icontains=query)
     return render(request, 'bookshelf/book_list.html', {'books': books, 'query': query})
-=======
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from .models import Book
@@ -35,4 +35,30 @@ def edit_book(request, pk):
 def delete_book(request, pk):
     # logic to delete a book
     pass
->>>>>>> 2ab008403daefe1cb6e27ad3abac24c4a6c51790
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import BookForm
+
+def add_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("book_list")
+    else:
+        form = BookForm()
+    return render(request, "bookshelf/book_form.html", {"form": form})
+    from django.contrib.auth import login
+from .forms import CustomUserCreationForm
+def register_view(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("list_books")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, "bookshelf/register.html", {"form": form})
+
+
