@@ -26,3 +26,13 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
+
+# api/views.py
+from rest_framework import generics
+from .models import Book
+from .serializers import BookSerializer
+
+class BookListView(generics.ListAPIView):
+    """Return a list of all books."""
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
