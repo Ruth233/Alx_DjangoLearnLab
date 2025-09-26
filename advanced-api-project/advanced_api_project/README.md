@@ -6,3 +6,18 @@
 Permissions:  
 - Unauthenticated users → Read-only.
 - Authenticated users → Full CRUD.
+
+### Advanced Query Features
+
+**Filtering**  
+Use query params:  
+`GET /api/books/?author=Rowling&publication_year=2007`
+
+**Search**  
+Text search on title/author:  
+`GET /api/books/?search=philosopher`
+
+**Ordering**  
+Sort results:  
+`GET /api/books/?ordering=title` or  
+`GET /api/books/?ordering=-publication_year` (descending)
