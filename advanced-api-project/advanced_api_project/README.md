@@ -21,3 +21,10 @@ Text search on title/author:
 Sort results:  
 `GET /api/books/?ordering=title` or  
 `GET /api/books/?ordering=-publication_year` (descending)
+
+### Running Unit Tests
+All API endpoint tests live in `api/test_views.py`.
+
+Run:
+```bash
+python manage.py test api
