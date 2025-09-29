@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from django.utils import timezone
 from .models import Author, Book
-
+from datetime import datetime
 
 class BookSerializer(serializers.ModelSerializer):
     """
-    Serializer for Book model with custom validation to prevent
-    publication_year from being set in the future.
+    Serializes all Book fields.
+    Includes custom validation to prevent future publication_year.
     """
     class Meta:
         model = Book
         fields = ['id', 'title', 'publication_year', 'author']
 
     def validate_publication_year(self, value):
-        current_year = timezone.now().year
+        current_year = datetime.now().year
         if value > current_year:
             raise serializers.ValidationError(
                 "Publication year cannot be in the future."
@@ -23,8 +22,8 @@ class BookSerializer(serializers.ModelSerializer):
 
 class AuthorSerializer(serializers.ModelSerializer):
     """
-    Serializer for Author model.
-    Includes a nested list of the author's books using BookSerializer.
+    Serializes Author name and a nested list of their books.
+    Uses BookSerializer with many=True to represent related books.
     """
     books = BookSerializer(many=True, read_only=True)
 
