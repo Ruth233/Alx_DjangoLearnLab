@@ -14,7 +14,7 @@
   - By title: `?title=The Hobbit`
   - By author: `?author=Tolkien`
   - By year: `?publication_year=1937`
-
+  - 
 - **Searching**
   - Text search across `title` and `author`: `?search=tolkien`
 
