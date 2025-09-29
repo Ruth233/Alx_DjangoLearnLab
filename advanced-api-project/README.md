@@ -21,3 +21,13 @@
 - **Ordering**
   - Ascending: `?ordering=title`
   - Descending: `?ordering=-publication_year`
+
+## Running Tests
+Unit tests live in `api/test_views.py` and cover:
+- CRUD operations for the Book API.
+- Filtering (?author=...), searching (?search=...), and ordering (?ordering=...).
+- Permission enforcement for create/update/delete.
+
+Run tests:
+```bash
+python manage.py test api
