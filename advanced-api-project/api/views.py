@@ -1,42 +1,32 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions
+# api/views.py
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
-from rest_framework import filters
 
-# Create your views here.
-# 1. List all books
+
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]   # public read
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'author']
+    permission_classes = [IsAuthenticatedOrReadOnly]  # read-only for unauthenticated users
 
- def perform_create(self, serializer):
-        # Example: attach request.user if your Book model has a 'created_by' field
-        serializer.save()
-
-# 2. Retrieve a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-# 3. Create a new book
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # only logged-in users
+    permission_classes = [IsAuthenticated]  # must be logged in
 
-# 4. Update an existing book
 class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-# 5. Delete a book
 class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
