@@ -16,6 +16,7 @@
 </article>
 {% endblock %}
 
+<<<<<<< HEAD
 
 <!-- existing post detail markup above -->
 <section id="comments">
@@ -54,3 +55,19 @@
     <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to leave a comment.</p>
   {% endif %}
 </section>
+=======
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ object.title }}</h2>
+  <p>{{ object.content }}</p>
+  <small>Written by {{ object.author }}</small>
+
+  {% if user == object.author %}
+    <a href="{% url 'post-update' object.pk %}" class="btn btn-warning">Edit</a>
+    <a href="{% url 'post-delete' object.pk %}" class="btn btn-danger">Delete</a>
+  {% endif %}
+
+  <br>
+  <a href="{% url 'post-list' %}">← Back to all posts</a>
+{% endblock %}
+>>>>>>> a1ac96cf898bce52711c57fdd71b06283b099fd3
