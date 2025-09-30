@@ -11,3 +11,20 @@
 
 CSRF protection is enabled via `{% csrf_token %}`.
 Passwords are securely hashed using Django’s default PBKDF2.
+
+## Blog Post Management
+
+Routes:
+- GET /posts/           -> list all posts
+- GET /posts/new/       -> create (login required)
+- GET /posts/<pk>/      -> detail
+- GET /posts/<pk>/edit/ -> update (author only)
+- GET /posts/<pk>/delete/ -> delete (author only)
+
+Permissions:
+- Anyone can view list/detail.
+- Only authenticated users can create posts.
+- Only the author (or staff) can edit/delete their posts.
+
+To run:
+- migrate, create superuser, runserver
