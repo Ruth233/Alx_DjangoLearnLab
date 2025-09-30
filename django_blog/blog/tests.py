@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 
 # Create your tests here.
 class PostViewTests(TestCase):
@@ -65,3 +65,34 @@ class CommentTests(TestCase):
         url = reverse('comment-delete', args=[self.post.pk, comment.pk])
         res = self.client.post(url, follow=True)
         self.assertFalse(Comment.objects.filter(pk=comment.pk).exists())
+
+
+from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth.models import User
+from .models import Post, Tag
+
+class TagSearchTests(TestCase):
+    def setUp(self):
+        self.u = User.objects.create_user('u', password='p')
+        self.post1 = Post.objects.create(title='Django tips', content='Use views', author=self.u)
+        self.post2 = Post.objects.create(title='Python tricks', content='Use list comprehensions', author=self.u)
+        tag = Tag.objects.create(name='django')
+        self.post1.tags.add(tag)
+
+    def test_posts_by_tag(self):
+        res = self.client.get(reverse('posts-by-tag', args=[ 'django' ]))  # slug is 'django'
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, self.post1.title)
+        self.assertNotContains(res, self.post2.title)
+
+    def test_search_title_content(self):
+        res = self.client.get(reverse('search-results') + '?q=Django')
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, self.post1.title)
+
+    def test_search_by_tag_name(self):
+        res = self.client.get(reverse('search-results') + '?q=django')
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, self.post1.title)
+
