@@ -28,3 +28,14 @@ Permissions:
 
 To run:
 - migrate, create superuser, runserver
+
+## Comments
+
+- Model: `Comment(post, author, content, created_at, updated_at)`
+- Create: POST to `/post/<post_pk>/comments/new/` — requires login.
+- Edit: GET/POST `/post/<post_pk>/comments/<comment_pk>/edit/` — only comment author.
+- Delete: GET/POST `/post/<post_pk>/comments/<comment_pk>/delete/` — only comment author.
+
+Inline commenting: the post detail page displays comments and an inline form for logged-in users.
+To run tests:
+    python manage.py test blog

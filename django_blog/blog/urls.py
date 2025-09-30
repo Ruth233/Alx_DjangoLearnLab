@@ -18,4 +18,9 @@ urlpatterns = [
     path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name='post-update'),
     path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    
+    # Comments (nested)
+    path('post/<int:post_pk>/comments/new/', CommentCreateView.as_view(), name='comment-create'),
+    path('post/<int:post_pk>/comments/<int:comment_pk>/edit/', CommentUpdateView.as_view(), name='comment-update'),
+    path('post/<int:post_pk>/comments/<int:comment_pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 ]
