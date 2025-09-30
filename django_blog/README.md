@@ -39,3 +39,13 @@ To run:
 Inline commenting: the post detail page displays comments and an inline form for logged-in users.
 To run tests:
     python manage.py test blog
+
+## Tags & Search
+
+- **Adding tags**: When creating or editing a post, enter comma-separated tags in the "tags" field (e.g. "django, python, tips"). New tags will be created automatically.
+- **View posts by tag**: /tags/<tag_slug>/ (example: /tags/django/)
+- **Search**: /search/?q=keyword — searches title, content, and tag names.
+
+Notes:
+- Tags appear on the post detail page. Click a tag to see posts that share it.
+- For production or advanced features, consider using `django-taggit` or a full-text search backend.
