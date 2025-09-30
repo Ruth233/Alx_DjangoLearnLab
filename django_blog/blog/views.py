@@ -10,7 +10,6 @@ from .models import Post, Comment, Tag
 from .forms import PostForm
 from .forms import CommentForm
 
-
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -229,6 +228,17 @@ class PostsByTagListView(ListView):
         ctx['tag'] = get_object_or_404(Tag, slug=self.kwargs.get('tag_slug'))
         return ctx
 
+
+
+
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_by_tag.html'  # create this template
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Post.objects.filter(tags__name__iexact=self.kwargs.get("tag"))
 
 # --- Search results ---
 class SearchResultsView(ListView):
