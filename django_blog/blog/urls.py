@@ -25,6 +25,6 @@ urlpatterns = [
 
     #tagging & search
     path('tags/<slug:tag_slug>/', PostsByTagListView.as_view(), name='posts-by-tag'),
-    path('search/', SearchResultsView.as_view(), name='search-results'),
+    path('tags/<str:tag>/', PostByTagListView.as_view(), name='posts-by-tag'),
 ]
 
