@@ -39,3 +39,4 @@ To run:
 Inline commenting: the post detail page displays comments and an inline form for logged-in users.
 To run tests:
     python manage.py test blog
+    
