@@ -6,7 +6,7 @@ from .forms import UserRegisterForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import PostForm
 from .forms import CommentForm
 
@@ -134,3 +134,116 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return comment.author == self.request.user
+
+
+
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    ordering = ['-published_date']
+    paginate_by = 10
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        from .forms import CommentForm
+        ctx['comment_form'] = CommentForm()
+        return ctx
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+    login_url = 'login'
+
+    def form_valid(self, form):
+        # use form.save with author and commit=True behavior
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.save()
+        # process tags - prefer the robust approach here
+        tags_str = form.cleaned_data.get('tags', '')
+        tag_names = [t.strip() for t in tags_str.split(',') if t.strip()]
+        post.tags.clear()
+        for name in tag_names:
+            tag = Tag.objects.filter(name__iexact=name).first()
+            if not tag:
+                tag = Tag.objects.create(name=name)
+            post.tags.add(tag)
+        return super().form_valid(form)
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+    login_url = 'login'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)  # saves post fields
+        # handle tags similar to create
+        post = self.object
+        tags_str = form.cleaned_data.get('tags', '')
+        tag_names = [t.strip() for t in tags_str.split(',') if t.strip()]
+        post.tags.clear()
+        for name in tag_names:
+            tag = Tag.objects.filter(name__iexact=name).first()
+            if not tag:
+                tag = Tag.objects.create(name=name)
+            post.tags.add(tag)
+        return response
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = reverse_lazy('post-list')
+    login_url = 'login'
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user
+
+
+# --- Tag list view ---
+class PostsByTagListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        slug = self.kwargs.get('tag_slug')
+        tag = get_object_or_404(Tag, slug=slug)
+        return tag.posts.all().order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag'] = get_object_or_404(Tag, slug=self.kwargs.get('tag_slug'))
+        return ctx
+
+
+# --- Search results ---
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '').strip()
+        if not q:
+            return Post.objects.none()
+        # search title, content, and tags
+        return Post.objects.filter(
+            Q(title__icontains=q) |
+            Q(content__icontains=q) |
+            Q(tags__name__icontains=q)
+        ).distinct().order_by('-published_date')
