@@ -47,3 +47,29 @@ class PostCommentAPITests(APITestCase):
         res = self.client.post(url, {'post': self.post1.pk, 'content': 'Nice'})
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Comment.objects.filter(post=self.post1, author=self.u2).exists())
+
+
+from django.urls import reverse
+from rest_framework.test import APITestCase
+from django.contrib.auth import get_user_model
+from posts.models import Post
+
+User = get_user_model()
+
+class FeedTests(APITestCase):
+    def setUp(self):
+        self.a = User.objects.create_user(username='a', password='pass')
+        self.b = User.objects.create_user(username='b', password='pass')
+        self.post_b1 = Post.objects.create(author=self.b, title='B1', content='x')
+        self.client.login(username='a', password='pass')
+
+    def test_feed_shows_followed_users_posts(self):
+        # a follows b
+        self.a.following.add(self.b)
+        url = reverse('user-feed')
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+        # response paginated: results list contains post_b1
+        data = res.json()
+        found_titles = [p['title'] for p in data.get('results', [])]
+        self.assertIn('B1', found_titles)
