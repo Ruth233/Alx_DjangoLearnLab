@@ -11,3 +11,20 @@
   {% endfor %}
   {% include 'pagination_snippet.html' %}
 {% endblock %}
+
+
+
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Posts tagged with "{{ view.kwargs.tag }}"</h2>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a>
+      </li>
+    {% empty %}
+      <p>No posts found for this tag.</p>
+    {% endfor %}
+  </ul>
+{% endblock %}

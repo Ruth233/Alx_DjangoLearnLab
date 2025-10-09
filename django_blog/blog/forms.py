@@ -14,13 +14,15 @@ class UserRegisterForm(UserCreationForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']  # author and published_date are handled automatically
+        fields = ['title', 'content', 'tags']  # author and published_date are handled automatically
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
-        }
  # comma-separated tags input (e.g. "django, python, tips")
         tags = forms.CharField(required=False, help_text="Comma-separated tags", widget=forms.TextInput(attrs={'placeholder': 'e.g. django, python'}))
+            'tags': TagWidget(),
+        }
+        
 class CommentForm(forms.ModelForm):
     content = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Write your comment...'}),
