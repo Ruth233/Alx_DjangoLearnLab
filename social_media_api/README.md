@@ -39,3 +39,15 @@ Base endpoint: `/api/`
 - Pagination: `?page=2` (default page size from settings)
 - Searching posts: `?search=keyword`
 - Filtering by author: `?author__username=username`
+
+
+## Follow & Feed API
+
+### Follow / Unfollow
+- POST /api/accounts/follow/<user_id>/ — follow user `<user_id>` (Auth required)
+- POST /api/accounts/unfollow/<user_id>/ — unfollow user `<user_id>` (Auth required)
+- GET /api/accounts/<user_id>/followers/ — list followers of user
+- GET /api/accounts/<user_id>/following/ — list who the user follows
+
+### Feed
+- GET /api/posts/feed/ — list posts from users you follow (Auth required). Supports pagination ?page=... and ?page_size=...
