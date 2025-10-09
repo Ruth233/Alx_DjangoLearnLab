@@ -17,3 +17,25 @@ Use `Authorization: Token <token>` header on protected endpoints.
 ## Models
 `CustomUser` extends `AbstractUser` with:
 - `bio`, `profile_picture` (ImageField), `followers` (ManyToMany to CustomUser; symmetrical=False)
+
+## Posts & Comments API
+
+Base endpoint: `/api/`
+
+### Posts
+- GET `/api/posts/` — list posts (support `?search=`, `?ordering=created_at`, `?author__username=`)
+- POST `/api/posts/` — create a post (auth required)
+- GET `/api/posts/{id}/` — retrieve
+- PUT/PATCH `/api/posts/{id}/` — update (author only)
+- DELETE `/api/posts/{id}/` — delete (author only)
+- GET `/api/posts/{id}/comments/` — list comments for post (paginated)
+
+### Comments
+- GET `/api/comments/` — list comments
+- POST `/api/comments/` — create comment (include `post` id in body; auth required)
+- GET/PUT/DELETE `/api/comments/{id}/` — manage a comment (author only)
+
+### Pagination & Filtering
+- Pagination: `?page=2` (default page size from settings)
+- Searching posts: `?search=keyword`
+- Filtering by author: `?author__username=username`
