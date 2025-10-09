@@ -43,40 +43,29 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         # return currently authenticated user
         return self.request.user
 
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from django.contrib.auth import get_user_model
+
 User = get_user_model()
 
-class FollowUserView(APIView):
+class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
-        """Current user follows user with id=user_id"""
-        if request.user.id == user_id:
-            return Response({"detail": "Cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
-        target = generics.get_object_or_404(User, id=user_id)
-        request.user.following.add(target)
-        return Response({"detail": f"You are now following {target.username}"}, status=status.HTTP_200_OK)
+        """Authenticated user follows another user"""
+        user_to_follow = generics.get_object_or_404(User, id=user_id)
+        if request.user == user_to_follow:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.add(user_to_follow)
+        return Response({"detail": f"You are now following {user_to_follow.username}."}, status=status.HTTP_200_OK)
 
-class UnfollowUserView(APIView):
+
+class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
-        """Current user unfollows user with id=user_id"""
-        target = generics.get_object_or_404(User, id=user_id)
-        request.user.following.remove(target)
-        return Response({"detail": f"You have unfollowed {target.username}"}, status=status.HTTP_200_OK)
-
-class FollowersListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    serializer_class = SimpleUserSerializer
-
-    def get_queryset(self):
-        user = generics.get_object_or_404(User, id=self.kwargs['user_id'])
-        return user.followers.all()
-
-class FollowingListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    serializer_class = SimpleUserSerializer
-
-    def get_queryset(self):
-        user = generics.get_object_or_404(User, id=self.kwargs['user_id'])
-        return user.following.all()
+        """Authenticated user unfollows another user"""
+        user_to_unfollow = generics.get_object_or_404(User, id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
