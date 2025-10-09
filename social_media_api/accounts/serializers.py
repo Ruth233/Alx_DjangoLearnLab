@@ -27,6 +27,16 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
 
+    # Login Serializer
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()  # ✅ check for this
+    password = serializers.CharField(write_only=True)  # ✅ check for this too
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Invalid credentials.")
         user.bio = validated_data.get('bio', '')
         user.profile_picture = validated_data.get('profile_picture', None)
         user.save()
