@@ -46,3 +46,11 @@ class LoginSerializer(serializers.Serializer):
 
         return user
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    follower_count = serializers.IntegerField(source='follower_count', read_only=True)
+    following_count = serializers.IntegerField(source='following_count', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'profile_picture', 'bio', 'follower_count', 'following_count')
+        read_only_fields = ('id', 'username', 'follower_count', 'following_count')

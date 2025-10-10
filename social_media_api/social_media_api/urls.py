@@ -23,8 +23,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
     path('api/', include('posts.urls')),
+<<<<<<< HEAD
     path('api/notifications/', include('notifications.urls')),
 
+=======
+    path('api/posts/', include('posts.urls')), 
+>>>>>>> cc156e84e17e1710c7779886ecd2fa4df2584a6a
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
