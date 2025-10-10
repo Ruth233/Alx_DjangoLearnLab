@@ -22,6 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-9rz@debhe6jh!1j0c#1yos@zjc0^tk8vp$vn7awvjbj#@hbum9'
 
+import os
+import dj_database_url
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -88,9 +91,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'default': dj_database_url.config(
+         default ='sqlite:///db.sqlite3',
+         conn_max_age=600
+        )
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
