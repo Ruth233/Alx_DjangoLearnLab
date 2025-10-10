@@ -104,6 +104,19 @@ class LikeCreateView(generics.GenericAPIView):
             recipient=post.author,
             actor=request.user,
             verb='liked your post',
+
+
+class LikeDestroyView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post)
+        if not like.exists():
+            return Response({'detail': 'You have not liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
+        like.delete()
+        return Response({'detail': 'Unliked successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
             target=post
         )
 
