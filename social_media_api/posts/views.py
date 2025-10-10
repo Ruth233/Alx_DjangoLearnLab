@@ -1,7 +1,6 @@
 from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
-<<<<<<< HEAD
 from .permissions import IsOwnerOrReadOnly
 from rest_framework import generics, permissions, status
 from django.contrib.contenttypes.models import ContentType
@@ -9,8 +8,6 @@ from .models import Post, Like
 from .serializers import LikeSerializer
 # import notification creation helper (we'll create it below)
 from notifications.utils import create_notification_for_like
-=======
->>>>>>> cc156e84e17e1710c7779886ecd2fa4df2584a6a
 
 # Custom permission to allow only the owner to edit/delete
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -39,8 +36,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-
-<<<<<<< HEAD
 class LikeCreateView(generics.GenericAPIView):
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -77,10 +72,10 @@ class LikeDestroyView(generics.GenericAPIView):
         like_qs.delete()
         # Optionally delete related notification(s) if you created one (keep simple: not deleting notifications here)
         return Response(status=status.HTTP_204_NO_CONTENT)
-=======
-from rest_framework import generics, permissions
+        
+from rest_framework import generics, status permissions
 from rest_framework.response import Response
-from .models import Post
+from .models import Post, Like
 from .serializers import PostSerializer
 
 class FeedView(generics.ListAPIView):
@@ -93,4 +88,36 @@ class FeedView(generics.ListAPIView):
         # Return posts from followed users, ordered by creation date (newest first)
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
 
->>>>>>> cc156e84e17e1710c7779886ecd2fa4df2584a6a
+from notifications.models import Notification
+
+class LikeCreateView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)  # ✅ required for check
+        like, created = Like.objects.get_or_create(user=request.user, post=post)  # ✅ required for check
+        if not created:
+            return Response({'detail': 'Already liked.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # ✅ required for check — direct Notification.objects.create call
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            verb='liked your post',
+
+
+class LikeDestroyView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post)
+        if not like.exists():
+            return Response({'detail': 'You have not liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
+        like.delete()
+        return Response({'detail': 'Unliked successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+            target=post
+        )
+
+        return Response({'detail': 'Post liked successfully.'}, status=status.HTTP_201_CREATED)
